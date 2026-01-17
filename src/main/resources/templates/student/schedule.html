@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Schedule - School Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .schedule-card {
+            border-left: 5px solid #667eea;
+            transition: transform 0.2s;
+        }
+
+        .schedule-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .time-badge {
+            background: #f0f2f5;
+            color: #4a5568;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 p-3 shadow-sm"
+        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/student/dashboard"><i class="bi bi-mortarboard-fill"></i> Student
+                Portal</a>
+            <div class="d-flex align-items-center text-white">
+                <span class="me-3"><i class="bi bi-person-circle"></i> <span
+                        th:text="${student.firstName + ' ' + student.lastName}">Student Name</span></span>
+                <a href="/student/dashboard" class="btn btn-outline-light btn-sm">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <div class="row mb-4">
+            <div class="col">
+                <h2 class="fw-bold"><i class="bi bi-calendar3"></i> My Weekly Schedule</h2>
+                <p class="text-muted" th:if="${student.studentGroup != null}">
+                    Your personalized schedule for group: <strong th:text="${student.studentGroup.name}">Group
+                        Name</strong>
+                </p>
+                <div th:unless="${student.studentGroup != null}" class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> You are not assigned to any group yet. Please contact
+                    administration.
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col" th:each="slot : ${schedule}">
+                <div class="card h-100 schedule-card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title fw-bold text-primary mb-0" th:text="${slot.course.courseName}">Course
+                                Name</h5>
+                            <span class="badge time-badge p-2" th:text="${slot.dayOfWeek}">Monday</span>
+                        </div>
+
+                        <div class="mb-2">
+                            <i class="bi bi-clock text-muted"></i>
+                            <span class="fw-bold" th:text="${slot.startTime + ' - ' + slot.endTime}">08:00 -
+                                10:00</span>
+                        </div>
+
+                        <div class="mb-2">
+                            <i class="bi bi-geo-alt text-muted"></i>
+                            <span th:text="${slot.classroom.name + ' (' + slot.classroom.building + ')'}">Room
+                                101</span>
+                        </div>
+
+                        <div class="mt-3 pt-3 border-top">
+                            <div class="small text-muted mb-1">Teacher</div>
+                            <div class="fw-bold"><i class="bi bi-person"></i> <span
+                                    th:text="${slot.teacher.firstName + ' ' + slot.teacher.lastName}">Teacher
+                                    Name</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(schedule)}" class="text-center py-5">
+            <i class="bi bi-calendar-x display-1 text-muted opacity-25 mb-4 d-block"></i>
+            <h4 class="text-muted">No classes scheduled for you at this time.</h4>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

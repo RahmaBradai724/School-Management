@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+
+<head>
+    <title th:text="${isEdit} ? 'Edit Teacher' : 'Add Teacher'">Teacher Form</title>
+</head>
+
+<body>
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0" th:text="${isEdit} ? 'Edit Teacher' : 'Add New Teacher'">Add Teacher</h2>
+            <a href="/admin/teachers" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+
+        <div class="card p-4 shadow-sm border-0">
+            <form th:action="@{/admin/teachers}" th:object="${teacher}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <h5 class="mb-3 text-muted">Personal Information</h5>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">First Name</label>
+                        <input type="text" th:field="*{firstName}" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Last Name</label>
+                        <input type="text" th:field="*{lastName}" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email Address</label>
+                    <input type="email" th:field="*{email}" class="form-control" required>
+                </div>
+
+                <h5 class="mb-3 mt-4 text-muted">Academic Details</h5>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Teacher ID</label>
+                        <input type="text" th:field="*{teacherId}" class="form-control" placeholder="TCH..." required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Specialization</label>
+                        <input type="text" th:field="*{specialization}" class="form-control"
+                            placeholder="e.g. Mathematics" required>
+                    </div>
+                </div>
+
+                <h5 class="mb-3 mt-4 text-muted">Account Credentials</h5>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Username</label>
+                        <input type="text" th:field="*{username}" class="form-control" required th:readonly="${isEdit}">
+                        <!-- Prevent changing username on edit if desired, or allow it -->
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold"
+                            th:text="${isEdit} ? 'New Password (leave blank to keep)' : 'Password'">Password</label>
+                        <input type="password" th:field="*{password}" class="form-control" th:required="${!isEdit}">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="/admin/teachers" class="btn btn-light border px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-5">
+                        <i class="bi bi-check-circle me-1"></i> Save Teacher
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+</body>
+
+</html>

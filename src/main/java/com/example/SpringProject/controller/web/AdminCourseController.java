@@ -3,6 +3,8 @@ package com.example.SpringProject.controller.web;
 import com.example.SpringProject.entity.Course;
 import com.example.SpringProject.service.CourseService;
 import com.example.SpringProject.service.TeacherService;
+import com.example.SpringProject.service.SpecialtyService;
+import com.example.SpringProject.service.StudentGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,8 @@ public class AdminCourseController {
 
     private final CourseService courseService;
     private final TeacherService teacherService;
+    private final SpecialtyService specialtyService;
+    private final StudentGroupService groupService;
 
     @GetMapping
     public String listCourses(Model model) {
@@ -27,6 +31,8 @@ public class AdminCourseController {
     public String showCreateForm(Model model) {
         model.addAttribute("course", new Course());
         model.addAttribute("teachers", teacherService.getAllTeachers());
+        model.addAttribute("specialties", specialtyService.getAllSpecialties());
+        model.addAttribute("groups", groupService.getAllGroups());
         model.addAttribute("isEdit", false);
         return "admin/course-form";
     }
@@ -37,6 +43,8 @@ public class AdminCourseController {
                 .map(course -> {
                     model.addAttribute("course", course);
                     model.addAttribute("teachers", teacherService.getAllTeachers());
+                    model.addAttribute("specialties", specialtyService.getAllSpecialties());
+                    model.addAttribute("groups", groupService.getAllGroups());
                     model.addAttribute("isEdit", true);
                     return "admin/course-form";
                 })

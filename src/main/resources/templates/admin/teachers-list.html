@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+
+<head>
+    <title>Manage Teachers</title>
+</head>
+
+<body>
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Manage Teachers</h2>
+            <a href="/admin/teachers/new" class="btn btn-primary">
+                <i class="bi bi-person-plus-fill"></i> Add Teacher
+            </a>
+        </div>
+
+        <div class="card p-4 shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Teacher ID</th>
+                            <th>Email</th>
+                            <th>Specialization</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="teacher : ${teachers}">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3">
+                                        <i class="bi bi-person-workspace"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold" th:text="${teacher.firstName + ' ' + teacher.lastName}">
+                                            John Doe</div>
+                                        <div class="small text-muted" th:text="${teacher.username}">jdoe</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-light text-dark border"
+                                    th:text="${teacher.teacherId}">TCH001</span></td>
+                            <td th:text="${teacher.email}">jdoe@school.com</td>
+                            <td><span class="badge bg-info text-dark" th:text="${teacher.specialization}">Math</span>
+                            </td>
+                            <td class="text-end">
+                                <a th:href="@{/admin/teachers/edit/{id}(id=${teacher.id})}"
+                                    class="btn btn-sm btn-outline-primary me-1">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <a th:href="@{/admin/teachers/delete/{id}(id=${teacher.id})}"
+                                    class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Are you sure? This will delete the teacher account.');">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${#lists.isEmpty(teachers)}" class="text-center text-muted py-5">
+                <i class="bi bi-people d-block fs-1 mb-3 opacity-25"></i>
+                <p>No teachers found.</p>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

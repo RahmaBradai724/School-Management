@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+
+<head>
+    <title>New Classroom</title>
+</head>
+
+<body>
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">New Classroom</h2>
+            <a href="/admin/classrooms" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+
+        <div class="card p-4 shadow-sm border-0">
+            <form th:action="@{/admin/classrooms}" th:object="${classroom}" method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label fw-bold">Classroom Name *</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" required
+                        placeholder="e.g. Room 101, Lab B">
+                </div>
+
+                <div class="mb-3">
+                    <label for="building" class="form-label fw-bold">Building *</label>
+                    <input type="text" class="form-control" id="building" th:field="*{building}" required
+                        placeholder="e.g. Science Block">
+                </div>
+
+                <div class="mb-4">
+                    <label for="capacity" class="form-label fw-bold">Capacity *</label>
+                    <input type="number" class="form-control" id="capacity" th:field="*{capacity}" required min="1">
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-2">
+                    <a href="/admin/classrooms" class="btn btn-light px-4 border">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-5">
+                        <i class="bi bi-save me-1"></i> Save Classroom
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+</body>
+
+</html>

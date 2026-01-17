@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Grades - Student Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+
+        .sidebar a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 12px 20px;
+            display: block;
+            border-radius: 8px;
+            margin: 5px 10px;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Student Sidebar -->
+            <nav class="col-md-2 d-md-block sidebar p-0">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h4><i class="bi bi-mortarboard-fill"></i> Student Portal</h4>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="/student/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/student/courses"><i class="bi bi-book"></i> My Courses</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/student/grades" class="active"><i class="bi bi-journal-check"></i> My Grades</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/student/schedule"><i class="bi bi-calendar3"></i> My Schedule</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/student/profile"><i class="bi bi-person"></i> My Profile</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-10 ms-sm-auto px-4">
+                <nav class="navbar navbar-expand-lg mb-4 mt-3 rounded shadow-sm bg-white">
+                    <div class="container-fluid">
+                        <h2 class="mb-0">My Grades</h2>
+                        <div class="d-flex align-items-center">
+                            <span class="navbar-text me-3">
+                                <i class="bi bi-person-circle"></i> [[${student.firstName}]] [[${student.lastName}]]
+                            </span>
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="row g-4">
+                    <div class="col-md-12">
+                        <div class="card p-4">
+                            <div th:if="${#lists.isEmpty(grades)}" class="text-center py-5">
+                                <i class="bi bi-clipboard-x display-1 text-muted opacity-25"></i>
+                                <p class="lead mt-3 text-muted">No grades recorded yet.</p>
+                            </div>
+
+                            <div th:unless="${#lists.isEmpty(grades)}">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Course</th>
+                                                <th>Exam Type</th>
+                                                <th>Date</th>
+                                                <th>Score</th>
+                                                <th>Comments</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="grade : ${grades}">
+                                                <td class="fw-bold" th:text="${grade.enrollment.course.courseName}">Math
+                                                </td>
+                                                <td><span class="badge bg-secondary"
+                                                        th:text="${grade.examType}">MIDTERM</span></td>
+                                                <td th:text="${grade.dateRecorded}">2024-01-01</td>
+                                                <td>
+                                                    <span class="badge"
+                                                        th:classappend="${grade.score >= 10 ? 'bg-success' : 'bg-danger'}"
+                                                        th:text="${grade.score} + '/20'">15/20</span>
+                                                </td>
+                                                <td class="text-muted small" th:text="${grade.comments}">Good job</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>

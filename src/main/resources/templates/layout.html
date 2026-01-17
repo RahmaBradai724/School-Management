@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title} ?: 'School Management System'">School Management System</title>
+    <title th:replace="${title}">School Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
         body {
             background-color: #f8f9fa;
         }
+
         .sidebar {
             min-height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+
         .sidebar a {
             color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
@@ -24,34 +27,42 @@
             margin: 5px 10px;
             transition: all 0.3s;
         }
-        .sidebar a:hover, .sidebar a.active {
+
+        .sidebar a:hover,
+        .sidebar a.active {
             background-color: rgba(255, 255, 255, 0.2);
             color: white;
         }
+
         .card {
             border: none;
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s;
         }
+
         .card:hover {
             transform: translateY(-5px);
         }
+
         .navbar {
             background: white;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .btn-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
             color: white;
         }
+
         .btn-gradient:hover {
             background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
             color: white;
         }
     </style>
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -63,23 +74,66 @@
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a href="/admin" th:classappend="${#httpServletRequest.requestURI == '/admin' ? 'active' : ''}">
+                            <a href="/admin" th:classappend="${requestURI == '/admin' ? 'active' : ''}">
                                 <i class="bi bi-speedometer2"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/admin/students" th:classappend="${#httpServletRequest.requestURI.startsWith('/admin/students') ? 'active' : ''}">
+                            <a href="/admin/students"
+                                th:classappend="${requestURI != null && requestURI.startsWith('/admin/students') ? 'active' : ''}">
                                 <i class="bi bi-people-fill"></i> Students
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/admin/courses" th:classappend="${#httpServletRequest.requestURI.startsWith('/admin/courses') ? 'active' : ''}">
+                            <a href="/admin/teachers"
+                                th:classappend="${requestURI != null && requestURI.startsWith('/admin/teachers') ? 'active' : ''}">
+                                <i class="bi bi-person-workspace"></i> Teachers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/admin/courses"
+                                th:classappend="${requestURI != null && requestURI.startsWith('/admin/courses') ? 'active' : ''}">
                                 <i class="bi bi-book-fill"></i> Courses
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/admin/enrollments" th:classappend="${#httpServletRequest.requestURI.startsWith('/admin/enrollments') ? 'active' : ''}">
+                            <a href="/admin/enrollments"
+                                th:classappend="${requestURI != null && requestURI.startsWith('/admin/enrollments') ? 'active' : ''}">
                                 <i class="bi bi-clipboard-check-fill"></i> Enrollments
+                            </a>
+                        </li>
+                        <hr class="mx-3 opacity-25">
+                        <div class="px-3 mb-2 small text-uppercase opacity-50">Academic Management</div>
+                        <li class="nav-item">
+                            <a href="/admin/sessions"
+                                th:classappend="${requestURI != null && requestURI.startsWith('/admin/sessions') ? 'active' : ''}">
+                                <i class="bi bi-calendar-event-fill"></i> Sessions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/admin/specialties"
+                                th:classappend="${requestURI != null && requestURI.startsWith('/admin/specialties') ? 'active' : ''}">
+                                <i class="bi bi-tags-fill"></i> Specialties
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/admin/groups"
+                                th:classappend="${requestURI != null && requestURI.startsWith('/admin/groups') ? 'active' : ''}">
+                                <i class="bi bi-collection-fill"></i> Student Groups
+                            </a>
+                        </li>
+                        <hr class="mx-3 opacity-25">
+                        <li class="nav-item">
+                            <a href="/admin/classrooms"
+                                th:classappend="${requestURI != null && requestURI.startsWith('/admin/classrooms') ? 'active' : ''}">
+                                <i class="bi bi-building"></i> Classrooms
+                            </a>
+                        </li>
+                        <div class="px-3 mb-2 small text-uppercase opacity-50">Planning</div>
+                        <li class="nav-item">
+                            <a href="/admin/schedule"
+                                th:classappend="${requestURI != null && requestURI.startsWith('/admin/schedule') ? 'active' : ''}">
+                                <i class="bi bi-calendar3"></i> Class Schedule
                             </a>
                         </li>
                     </ul>
@@ -92,13 +146,15 @@
                 <nav class="navbar navbar-expand-lg mb-4 mt-3 rounded">
                     <div class="container-fluid">
                         <h2 class="mb-0" th:text="${pageTitle} ?: 'Dashboard'">Dashboard</h2>
-                        <div class="d-flex">
+                        <div class="d-flex align-items-center">
                             <span class="navbar-text me-3">
                                 <i class="bi bi-person-circle"></i> Admin
                             </span>
-                            <a href="/logout" class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-box-arrow-right"></i> Logout
-                            </a>
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </nav>
@@ -121,4 +177,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

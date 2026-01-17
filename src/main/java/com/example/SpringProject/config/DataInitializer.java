@@ -19,6 +19,10 @@ public class DataInitializer implements CommandLineRunner {
     private final CourseRepository courseRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final GradeRepository gradeRepository;
+    private final AcademicSessionRepository sessionRepository;
+    private final SpecialtyRepository specialtyRepository;
+    private final StudentGroupRepository groupRepository;
+    private final ClassroomRepository classroomRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -27,6 +31,19 @@ public class DataInitializer implements CommandLineRunner {
         if (administratorRepository.count() > 0) {
             return;
         }
+
+        // Create Classrooms
+        Classroom room1 = new Classroom();
+        room1.setName("Room 101");
+        room1.setBuilding("Main Building");
+        room1.setCapacity(30);
+        classroomRepository.save(room1);
+
+        Classroom room2 = new Classroom();
+        room2.setName("Lab A");
+        room2.setBuilding("Science Block");
+        room2.setCapacity(20);
+        classroomRepository.save(room2);
 
         // Create Administrator
         Administrator admin = new Administrator();
@@ -39,6 +56,38 @@ public class DataInitializer implements CommandLineRunner {
         admin.setAdminId("ADM001");
         admin.setDepartment("IT");
         administratorRepository.save(admin);
+
+        // Create Academic Session
+        AcademicSession session1 = new AcademicSession();
+        session1.setName("2024-2025");
+        session1.setStartDate(LocalDate.of(2024, 9, 1));
+        session1.setEndDate(LocalDate.of(2025, 6, 30));
+        session1.setActive(true);
+        sessionRepository.save(session1);
+
+        // Create Specialties
+        Specialty spec1 = new Specialty();
+        spec1.setName("Computer Science");
+        spec1.setDescription("Core CS fundamentals");
+        specialtyRepository.save(spec1);
+
+        Specialty spec2 = new Specialty();
+        spec2.setName("Artificial Intelligence");
+        spec2.setDescription("Modern AI and ML");
+        specialtyRepository.save(spec2);
+
+        // Create Student Groups
+        StudentGroup group1 = new StudentGroup();
+        group1.setName("CS-GP1");
+        group1.setSpecialty(spec1);
+        group1.setAcademicSession(session1);
+        groupRepository.save(group1);
+
+        StudentGroup group2 = new StudentGroup();
+        group2.setName("AI-GP1");
+        group2.setSpecialty(spec2);
+        group2.setAcademicSession(session1);
+        groupRepository.save(group2);
 
         // Create Teachers
         Teacher teacher1 = new Teacher();

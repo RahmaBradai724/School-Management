@@ -31,19 +31,30 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> {
+                })
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/login", "/signup", "/error").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/student/**").hasRole("STUDENT")
+                        .requestMatchers("/teacher/**").hasRole("TEACHER")
                         .requestMatchers("/api/profile/**").authenticated()
                         .requestMatchers("/api/students/**").hasAnyRole("ADMIN", "STUDENT")
                         .requestMatchers("/api/teachers/**").hasAnyRole("ADMIN", "TEACHER")
                         .requestMatchers("/api/courses/**").hasAnyRole("ADMIN", "STUDENT", "TEACHER")
                         .requestMatchers("/api/enrollments/**").hasAnyRole("ADMIN", "STUDENT")
                         .requestMatchers("/api/grades/**").hasAnyRole("ADMIN", "STUDENT", "TEACHER")
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/spa/**").permitAll()
+                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/spa/**").permitAll()
                         .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

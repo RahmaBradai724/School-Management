@@ -2,6 +2,7 @@ package com.example.SpringProject.controller.web;
 
 import com.example.SpringProject.entity.Student;
 import com.example.SpringProject.service.StudentService;
+import com.example.SpringProject.service.StudentGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminStudentController {
 
     private final StudentService studentService;
+    private final StudentGroupService groupService;
 
     @GetMapping
     public String listStudents(Model model) {
@@ -24,6 +26,7 @@ public class AdminStudentController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("student", new Student());
+        model.addAttribute("groups", groupService.getAllGroups());
         model.addAttribute("isEdit", false);
         return "admin/student-form";
     }
@@ -33,6 +36,7 @@ public class AdminStudentController {
         return studentService.getStudentById(id)
                 .map(student -> {
                     model.addAttribute("student", student);
+                    model.addAttribute("groups", groupService.getAllGroups());
                     model.addAttribute("isEdit", true);
                     return "admin/student-form";
                 })

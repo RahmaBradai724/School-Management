@@ -37,6 +37,9 @@ public class StudentService {
     public Student createStudent(Student student) {
         // Encode password before saving
         student.setPassword(passwordEncoder.encode(student.getPassword()));
+        if (student.getRole() == null) {
+            student.setRole(com.example.SpringProject.entity.UserRole.STUDENT);
+        }
         return studentRepository.save(student);
     }
 
@@ -49,6 +52,7 @@ public class StudentService {
         student.setEmail(studentDetails.getEmail());
         student.setStudentId(studentDetails.getStudentId());
         student.setEnrollmentDate(studentDetails.getEnrollmentDate());
+        student.setStudentGroup(studentDetails.getStudentGroup());
 
         // Only update password if a new one is provided
         if (studentDetails.getPassword() != null && !studentDetails.getPassword().isEmpty()) {

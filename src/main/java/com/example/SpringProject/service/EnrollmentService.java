@@ -23,6 +23,7 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
+    private final EmailService emailService;
 
     public List<Enrollment> getAllEnrollments() {
         return enrollmentRepository.findAll();
@@ -62,7 +63,21 @@ public class EnrollmentService {
         enrollment.setEnrollmentDate(LocalDate.now());
         enrollment.setStatus(EnrollmentStatus.ACTIVE);
 
-        return enrollmentRepository.save(enrollment);
+        Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+
+        // Notify Student
+        emailService.sendEmail(student.getEmail(), "Course Enrollment Successful",
+                "Dear " + student.getFirstName() + ",\n\nYou have been successfully enrolled in the course: "
+                        + course.getCourseName() + " (" + course.getCourseCode() + ").");
+
+        // Notify Teacher
+        if (course.getTeacher() != null) {
+            emailService.sendEmail(course.getTeacher().getEmail(), "New Student Enrolled",
+                    "Dear " + course.getTeacher().getFirstName() + ",\n\nA new student (" + student.getFirstName() + " "
+                            + student.getLastName() + ") has enrolled in your course: " + course.getCourseName() + ".");
+        }
+
+        return savedEnrollment;
     }
 
     public Enrollment updateEnrollmentStatus(Long enrollmentId, EnrollmentStatus status) {
@@ -74,6 +89,18 @@ public class EnrollmentService {
     }
 
     public void deleteEnrollment(Long id) {
+        Enrollment enrollment = enrollmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+
         enrollmentRepository.deleteById(id);
+
+        // Notify Student & Teacher of unenrollment
+        emailService.sendEmail(enrollment.getStudent().getEmail(), "Course Unenrollment",
+                "You have been unenrolled from the course: " + enrollment.getCourse().getCourseName() + ".");
+
+        if (enrollment.getCourse().getTeacher() != null) {
+            emailService.sendEmail(enrollment.getCourse().getTeacher().getEmail(), "Student Unenrolled",
+                    "A student has unenrolled from your course: " + enrollment.getCourse().getCourseName() + ".");
+        }
     }
 }

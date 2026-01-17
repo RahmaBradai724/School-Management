@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+
+<head>
+    <title>Schedule Class - Admin</title>
+</head>
+
+<body>
+    <section>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <h4 class="mb-4 text-center">Plan Course Session</h4>
+
+                    <form th:action="@{/admin/schedule/add}" th:object="${newSlot}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Course</label>
+                            <select th:field="*{course.id}" class="form-select" required>
+                                <option value="" disabled selected>Select Course</option>
+                                <option th:each="course : ${courses}" th:value="${course.id}"
+                                    th:text="${course.courseName}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Teacher</label>
+                            <select th:field="*{teacher.id}" class="form-select" required>
+                                <option value="" disabled selected>Select Teacher</option>
+                                <option th:each="teacher : ${teachers}" th:value="${teacher.id}"
+                                    th:text="${teacher.firstName + ' ' + teacher.lastName}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Student Group</label>
+                            <select th:field="*{studentGroup.id}" class="form-select" required>
+                                <option value="" disabled selected>Select Group</option>
+                                <option th:each="group : ${groups}" th:value="${group.id}" th:text="${group.name}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Day of Week</label>
+                                <select th:field="*{dayOfWeek}" class="form-select" required>
+                                    <option value="" disabled selected>Select Day</option>
+                                    <option th:each="day : ${days}" th:value="${day}" th:text="${day}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Start Time</label>
+                                <input type="time" th:field="*{startTime}" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">End Time</label>
+                                <input type="time" th:field="*{endTime}" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Classroom</label>
+                            <select th:field="*{classroom.id}" class="form-select" required>
+                                <option value="" disabled selected>Select Room</option>
+                                <option th:each="room : ${classrooms}" th:value="${room.id}"
+                                    th:text="${room.name + ' (' + room.building + ')'}"></option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-gradient flex-grow-1 py-2">Schedule Session</button>
+                            <a href="/admin/schedule" class="btn btn-outline-secondary py-2 px-4">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

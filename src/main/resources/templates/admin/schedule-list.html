@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+
+<head>
+    <title>Class Schedule - Admin</title>
+</head>
+
+<body>
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4><i class="bi bi-calendar3"></i> Master Class Schedule</h4>
+            <a href="/admin/schedule/add" class="btn btn-gradient">
+                <i class="bi bi-calendar-plus"></i> Add New Slot
+            </a>
+        </div>
+
+        <div class="card p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Day</th>
+                            <th>Time</th>
+                            <th>Course</th>
+                            <th>Teacher</th>
+                            <th>Group</th>
+                            <th>Room</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="slot : ${slots}">
+                            <td class="fw-bold" th:text="${slot.dayOfWeek}"></td>
+                            <td th:text="${slot.startTime + ' - ' + slot.endTime}"></td>
+                            <td th:text="${slot.course.courseName}"></td>
+                            <td>
+                                <i class="bi bi-person"></i> <span
+                                    th:text="${slot.teacher.firstName + ' ' + slot.teacher.lastName}"></span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary" th:text="${slot.studentGroup.name}"></span>
+                            </td>
+                            <td>
+                                <i class="bi bi-geo-alt"></i> <span th:text="${slot.classroom.name}"></span>
+                            </td>
+                            <td class="text-end">
+                                <a th:href="@{/admin/schedule/delete/{id}(id=${slot.id})}"
+                                    class="btn btn-outline-danger btn-sm"
+                                    onclick="return confirm('Remove this session from the schedule?')">
+                                    <i class="bi bi-x-circle"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(slots)}">
+                            <td colspan="7" class="text-center text-muted py-5">
+                                <i class="bi bi-calendar-x d-block fs-1 mb-3"></i>
+                                No classes scheduled yet.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

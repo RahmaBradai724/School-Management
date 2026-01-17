@@ -1,160 +1,91 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${isEdit} ? 'Edit Student' : 'Add Student'">Student Form</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .sidebar {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .sidebar a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            padding: 12px 20px;
-            display: block;
-            border-radius: 8px;
-            margin: 5px 10px;
-            transition: all 0.3s;
-        }
-
-        .sidebar a:hover,
-        .sidebar a.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-    </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-2 d-md-block sidebar p-0">
-                <div class="position-sticky pt-3">
-                    <div class="text-center mb-4">
-                        <h4><i class="bi bi-mortarboard-fill"></i> School Admin</h4>
-                    </div>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a href="/admin">
-                                <i class="bi bi-speedometer2"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/admin/students" class="active">
-                                <i class="bi bi-people-fill"></i> Students
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/admin/courses">
-                                <i class="bi bi-book-fill"></i> Courses
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/admin/enrollments">
-                                <i class="bi bi-clipboard-check-fill"></i> Enrollments
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            <!-- Main Content -->
-            <main class="col-md-10 ms-sm-auto px-4">
-                <nav class="navbar navbar-expand-lg mb-4 mt-3 rounded">
-                    <div class="container-fluid">
-                        <h2 class="mb-0" th:text="${isEdit} ? 'Edit Student' : 'Add New Student'">Add Student</h2>
-                        <a href="/admin/students" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Back to List
-                        </a>
-                    </div>
-                </nav>
-
-                <!-- Student Form -->
-                <div class="card p-4">
-                    <form th:action="@{/admin/students/save}" th:object="${student}" method="post">
-                        <input type="hidden" th:field="*{id}">
-                        <input type="hidden" th:field="*{role}" value="STUDENT">
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="studentId" class="form-label">Student ID *</label>
-                                <input type="text" class="form-control" id="studentId" th:field="*{studentId}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="username" class="form-label">Username *</label>
-                                <input type="text" class="form-control" id="username" th:field="*{username}" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName" class="form-label">First Name *</label>
-                                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName" class="form-label">Last Name *</label>
-                                <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email *</label>
-                                <input type="email" class="form-control" id="email" th:field="*{email}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="enrollmentDate" class="form-label">Enrollment Date *</label>
-                                <input type="date" class="form-control" id="enrollmentDate" th:field="*{enrollmentDate}"
-                                    required>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">
-                                Password <span th:if="${isEdit}" class="text-muted">(leave blank to keep current)</span>
-                            </label>
-                            <input type="password" class="form-control" id="password" th:field="*{password}"
-                                th:required="${!isEdit}">
-                        </div>
-
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-save"></i> Save Student
-                            </button>
-                            <a href="/admin/students" class="btn btn-secondary px-4">
-                                <i class="bi bi-x-circle"></i> Cancel
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </main>
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0" th:text="${isEdit} ? 'Edit Student' : 'Add New Student'">Add Student</h2>
+            <a href="/admin/students" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <div class="card p-4 shadow-sm border-0">
+            <form th:action="@{/admin/students/save}" th:object="${student}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <input type="hidden" th:field="*{role}" value="STUDENT">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="studentId" class="form-label fw-bold">Student ID *</label>
+                        <input type="text" class="form-control" id="studentId" th:field="*{studentId}" required
+                            placeholder="e.g. STU001">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="username" class="form-label fw-bold">Username *</label>
+                        <input type="text" class="form-control" id="username" th:field="*{username}" required
+                            placeholder="e.g. jdoe">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName" class="form-label fw-bold">First Name *</label>
+                        <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName" class="form-label fw-bold">Last Name *</label>
+                        <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label fw-bold">Email *</label>
+                        <input type="email" class="form-control" id="email" th:field="*{email}" required
+                            placeholder="student@school.com">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="enrollmentDate" class="form-label fw-bold">Enrollment Date *</label>
+                        <input type="date" class="form-control" id="enrollmentDate" th:field="*{enrollmentDate}"
+                            required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="studentGroup" class="form-label fw-bold">Student Group</label>
+                    <select class="form-select" id="studentGroup" name="studentGroup.id">
+                        <option value="" th:selected="${student.studentGroup == null}">-- No Group Assigned --</option>
+                        <option th:each="group : ${groups}" th:value="${group.id}"
+                            th:selected="${student.studentGroup != null && student.studentGroup.id == group.id}"
+                            th:text="${group.name + ' (' + group.specialty.name + ')'}">
+                            Group Name (Specialty)
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-bold">
+                        Password <span th:if="${isEdit}" class="text-muted small fw-normal">(leave blank to keep
+                            current)</span>
+                    </label>
+                    <input type="password" class="form-control" id="password" th:field="*{password}"
+                        th:required="${!isEdit}">
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-2">
+                    <a href="/admin/students" class="btn btn-light px-4 border">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-5">
+                        <i class="bi bi-save me-1"></i> Save Student
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
 </body>
 
 </html>

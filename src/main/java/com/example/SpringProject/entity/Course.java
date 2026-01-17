@@ -3,6 +3,8 @@ package com.example.SpringProject.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "courses")
 @Data
+@EqualsAndHashCode(exclude = { "enrollments", "studentGroups" })
+@ToString(exclude = { "enrollments", "studentGroups" })
 @NoArgsConstructor
 @AllArgsConstructor
 public class Course {
@@ -41,4 +45,12 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("course")
     private List<Enrollment> enrollments = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "specialty_id")
+    private Specialty specialty;
+
+    @ManyToMany
+    @JoinTable(name = "course_groups", joinColumns = @JoinColumn(name = "course_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
+    private List<StudentGroup> studentGroups = new ArrayList<>();
 }

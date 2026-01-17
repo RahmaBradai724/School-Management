@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -12,10 +13,18 @@ import java.util.List;
 @Entity
 @Table(name = "teachers")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "courses")
+@ToString(callSuper = true, exclude = "courses")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Teacher extends User {
+
+    @PrePersist
+    public void prePersist() {
+        if (this.role == null) {
+            this.role = UserRole.TEACHER;
+        }
+    }
 
     @Column(unique = true, nullable = false)
     private String teacherId;
