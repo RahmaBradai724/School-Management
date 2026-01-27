@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Login Form
     document.getElementById('login-form').addEventListener('submit', handleLogin);
-    
+
     // Profile Form
     document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
-    
+
     // Password Form
     document.getElementById('password-form').addEventListener('submit', handlePasswordChange);
 });
@@ -85,7 +85,7 @@ function showDashboard() {
     document.getElementById('auth-container').classList.add('d-none');
     document.getElementById('app-container').classList.remove('d-none');
     document.getElementById('user-display-name').textContent = currentUser.username;
-    
+
     showSection('dashboard');
     loadEnrollments();
 }
@@ -93,7 +93,7 @@ function showDashboard() {
 function showSection(sectionId) {
     document.querySelectorAll('.app-section').forEach(s => s.classList.add('d-none'));
     document.getElementById(`${sectionId}-section`).classList.remove('d-none');
-    
+
     // Update nav active state
     document.querySelectorAll('.nav-link').forEach(l => {
         l.classList.remove('active');
@@ -111,14 +111,14 @@ async function loadEnrollments() {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const profile = await profileRes.json();
-        
+
         // Use student ID if role is STUDENT
         const url = profile.role === 'STUDENT' ? `${API_URL}/enrollments/student/${profile.id}` : `${API_URL}/enrollments`;
 
         const response = await fetch(url, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         const enrollments = await response.json();
         renderEnrollments(enrollments);
         document.getElementById('stat-courses').textContent = enrollments.length;
@@ -166,6 +166,8 @@ async function loadAllCourses() {
 
 function renderAllCourses(courses) {
     const container = document.getElementById('all-courses');
+    const isStudent = currentUser && currentUser.role === 'STUDENT';
+
     container.innerHTML = courses.map(course => `
         <div class="col-md-6 col-lg-4 animate-in">
             <div class="glass-card p-4 h-100 course-card">
@@ -176,9 +178,11 @@ function renderAllCourses(courses) {
                 <h5 class="text-white mb-2">${course.courseName}</h5>
                 <p class="text-white-50 small mb-4">${course.description || 'No description available.'}</p>
                 <div class="mt-auto">
+                    ${isStudent ? `
                     <button class="btn btn-outline-primary btn-sm w-100" onclick="enroll(${course.id})">
                         <i class="bi bi-plus-lg me-1"></i> Enroll Now
                     </button>
+                    ` : ''}
                 </div>
             </div>
         </div>
@@ -187,18 +191,13 @@ function renderAllCourses(courses) {
 
 async function enroll(courseId) {
     try {
-        const profileRes = await fetch(`${API_URL}/profile`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const profile = await profileRes.json();
-
-        const response = await fetch(`${API_URL}/enrollments/enroll?studentId=${profile.id}&courseId=${courseId}`, {
+        const response = await fetch(`${API_URL}/enrollments/self/enroll?courseId=${courseId}`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (response.ok) {
-            showToast('Enrolled successfully!');
+            showToast('Enrolled successfully! A confirmation email has been sent.');
             showSection('dashboard');
             loadEnrollments();
         } else {
@@ -216,7 +215,7 @@ async function loadProfileData() {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const profile = await response.json();
-        
+
         document.getElementById('profile-firstName').value = profile.firstName || '';
         document.getElementById('profile-lastName').value = profile.lastName || '';
         document.getElementById('profile-email').value = profile.email || '';
@@ -236,7 +235,7 @@ async function handleProfileUpdate(e) {
     try {
         const response = await fetch(`${API_URL}/profile`, {
             method: 'PUT',
-            headers: { 
+            headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
@@ -263,7 +262,7 @@ async function handlePasswordChange(e) {
     try {
         const response = await fetch(`${API_URL}/profile/password`, {
             method: 'PUT',
-            headers: { 
+            headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
@@ -283,7 +282,7 @@ async function handlePasswordChange(e) {
 }
 
 function getStatusColor(status) {
-    switch(status) {
+    switch (status) {
         case 'ACTIVE': return 'success';
         case 'PENDING': return 'warning';
         case 'COMPLETED': return 'primary';
@@ -295,10 +294,10 @@ function getStatusColor(status) {
 function showToast(message, type = 'success') {
     const toastEl = document.getElementById('liveToast');
     const toastMsg = document.getElementById('toast-message');
-    
+
     toastEl.classList.remove('bg-primary', 'bg-danger');
     toastEl.classList.add(type === 'danger' ? 'bg-danger' : 'bg-primary');
-    
+
     toastMsg.textContent = message;
     const toast = new bootstrap.Toast(toastEl);
     toast.show();

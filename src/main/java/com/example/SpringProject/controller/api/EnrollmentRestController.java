@@ -17,10 +17,27 @@ import java.util.List;
 public class EnrollmentRestController {
 
     private final EnrollmentService enrollmentService;
+    private final com.example.SpringProject.repository.StudentRepository studentRepository;
 
     @GetMapping
     public ResponseEntity<List<Enrollment>> getAllEnrollments() {
         return ResponseEntity.ok(enrollmentService.getAllEnrollments());
+    }
+
+    @PostMapping("/self/enroll")
+    public ResponseEntity<?> enrollSelf(@RequestParam Long courseId,
+            org.springframework.security.core.Authentication authentication) {
+        String username = authentication.getName();
+        return studentRepository.findByUsername(username)
+                .map(student -> {
+                    try {
+                        Enrollment enrollment = enrollmentService.enrollStudent(student.getId(), courseId);
+                        return ResponseEntity.status(HttpStatus.CREATED).body(enrollment);
+                    } catch (RuntimeException e) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+                    }
+                })
+                .orElse(ResponseEntity.status(HttpStatus.FORBIDDEN).body("Student profile not found"));
     }
 
     @GetMapping("/{id}")

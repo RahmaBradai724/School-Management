@@ -73,6 +73,59 @@
 
                 <div class="row g-4">
                     <div class="col-md-12">
+                        <!-- Flash Messages -->
+                        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show"
+                            role="alert">
+                            <span th:text="${successMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show"
+                            role="alert">
+                            <span th:text="${errorMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+
+                    <!-- Available Courses -->
+                    <div class="col-md-12">
+                        <div class="card p-4 mb-4">
+                            <h5 class="mb-4 text-primary"><i class="bi bi-plus-circle"></i> Available Courses for
+                                Enrollment</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Course Name</th>
+                                            <th>Credits</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:if="${#lists.isEmpty(availableCourses)}">
+                                            <td colspan="4" class="text-center text-muted">No new courses available.
+                                            </td>
+                                        </tr>
+                                        <tr th:each="course : ${availableCourses}">
+                                            <td th:text="${course.courseCode}">CS101</td>
+                                            <td th:text="${course.courseName}">Intro IP</td>
+                                            <td th:text="${course.credits}">3</td>
+                                            <td>
+                                                <form th:action="@{/student/enroll}" method="post">
+                                                    <input type="hidden" name="courseId" th:value="${course.id}" />
+                                                    <button type="submit" class="btn btn-primary btn-sm">
+                                                        <i class="bi bi-check-circle"></i> Enroll
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
                         <div class="card p-4">
                             <h5 class="mb-4">My Current Enrollments</h5>
                             <div class="table-responsive">

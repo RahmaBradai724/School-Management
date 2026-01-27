@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "courses")
 @Data
 @EqualsAndHashCode(exclude = { "enrollments", "studentGroups" })
-@ToString(exclude = { "enrollments", "studentGroups" })
+@ToString(exclude = { "enrollments", "studentGroups", "scheduleSlots" })
 @NoArgsConstructor
 @AllArgsConstructor
 public class Course {
@@ -45,6 +45,10 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("course")
     private List<Enrollment> enrollments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("course") // Prevent infinite recursion
+    private List<ScheduleSlot> scheduleSlots = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "specialty_id")

@@ -23,6 +23,7 @@ public class StudentWebController {
     private final EnrollmentService enrollmentService;
     private final ScheduleService scheduleService;
     private final GradeService gradeService;
+    private final com.example.SpringProject.service.CourseService courseService;
 
     @GetMapping("/dashboard")
     public String dashboard(Authentication authentication, Model model) {
@@ -35,7 +36,36 @@ public class StudentWebController {
         var enrollments = enrollmentService.getEnrollmentsByStudent(student.getId());
         model.addAttribute("enrollments", enrollments);
 
+        // Filter out courses already enrolled in
+        var allCourses = courseService.getAllCourses();
+        var enrolledCourseIds = enrollments.stream()
+                .map(e -> e.getCourse().getId())
+                .collect(java.util.stream.Collectors.toSet());
+        var availableCourses = allCourses.stream()
+                .filter(c -> !enrolledCourseIds.contains(c.getId()))
+                .collect(java.util.stream.Collectors.toList());
+
+        model.addAttribute("availableCourses", availableCourses);
+
         return "student/dashboard";
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/enroll")
+    public String enroll(@org.springframework.web.bind.annotation.RequestParam Long courseId,
+            Authentication authentication,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        String username = authentication.getName();
+        Student student = studentRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        try {
+            enrollmentService.enrollStudent(student.getId(), courseId);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Successfully enrolled! A confirmation email has been sent to " + student.getEmail());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/student/dashboard";
     }
 
     @GetMapping("/courses")

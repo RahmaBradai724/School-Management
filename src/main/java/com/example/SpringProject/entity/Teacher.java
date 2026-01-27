@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "teachers")
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = "courses")
-@ToString(callSuper = true, exclude = "courses")
+@ToString(callSuper = true, exclude = { "courses", "scheduleSlots" })
 @NoArgsConstructor
 @AllArgsConstructor
 public class Teacher extends User {
@@ -34,6 +34,9 @@ public class Teacher extends User {
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> courses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ScheduleSlot> scheduleSlots = new ArrayList<>();
 
     public Teacher(String username, String password, String email, String firstName,
             String lastName, String teacherId, String specialization) {
